@@ -84,32 +84,36 @@ export default {
     },
     // 进行路由的跳转
     goSearch(event) {
-      let element = event.target
-      // 获取到当前出发这个事件的节点【h3,a,dt,dl】，需要带有daata-categoryname这样节点【一定是a标签】
-      // 节点有一个属性是dataset属性，可以获取节点的自定义属性和属性值
-      let { categoryname, category1id, category2id, category3id } = element.dataset
-      // 如果标签身上有categoryname一定就是a标签
-      let location = { name: 'search' }
-      let query = { categoryName: categoryname }
-      if (category1id) {
-        // 整理路由跳转的函数
-        query.category1Id = category1id
-        // 一级，二级，三级分类
-      } else if (category2id) {
-        query.category2Id = category2id
-      } else {
-        query.category3Id = category3id
+      //第一个问题:div父节点子元素太多【h3、h2、em、dt、dd、dl...a】？你怎么知道你点击的一定是a
+      //第二个问题:要区分一级分类、二级分类、三级分类的a标签【category1Id|category2Id|category2Id】
+      let targetNode = event.target;
+      //获取触发事件节点的自定义属性【a:data-categoryName】
+      let { categoryname, category1id, category2id, category3id } =
+        targetNode.dataset;
+      //判断点击的是a【不管是1|2|3】
+      if (categoryname) {
+        //点击只要是a,就是往search模块跳转
+        var locations = {
+          name: "search",
+          query: { categoryName: categoryname },
+        };
+        //一级分类的a
+        if (category1id) {
+          locations.query.category1Id = category1id;
+        } else if (category2id) {
+          //二级分类的a
+          locations.query.category2Id = category2id;
+        } else {
+          //三级分类的a
+          locations.query.category3Id = category3id;
+        }
+        //点击商品分类按钮的时候,如果路径当中携带params参数,需要合并携带给search模块
+        if (this.$route.params.keyword) {
+          locations.params = this.$route.params;
+        }
+        //目前商品分类这里携带参数只有query参数
+        this.$router.push(locations);
       }
-      //判断：如果路由跳转的时候，带有params参数，歇脚传递过去
-      if(this.$route.params){
-        location.params=this.$route.params
-        // 动态给location配置对象添加query属性
-        location.query=query
-        // 路由跳转
-        this.$router.push(location)
-        
-      }
-     
     },
     // 当鼠标移入的时候，让商品分类列表进行展示
     enterShow(event) {
@@ -124,7 +128,19 @@ export default {
         this.show = false
       }
     }
-  }
+  },
+    //计算属性
+    computed: {
+    //数组的写法:目前书写的是大仓库state的K  ...mapState(['home'])
+
+    ...mapState({
+      //对象写法,对象的K,给VC新增的属性
+      //新增的属性erha,右侧属性值为箭头函数返回的结果。作为新增属性的属性值
+      //箭头函数执行，注入一个参数state->大仓库【包含小仓库】
+      categoryList: (state) => state.home.categoryList, //对象简写形式
+    }),
+  },
+  
 }
 </script>
 

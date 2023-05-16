@@ -9,3 +9,9 @@ export const reqCatgoryList=()=>requests({url:'/product/getBaseCategoryList',met
 
 // 获取banner（home首页轮播图接口） 
 export const reqGetBannerList=()=>mockRequests.get('/banner')
+
+// 获取floor 
+export const reqFloorList=()=>mockRequests.get('/floor')
+
+// 获取搜索模块数据
+export const reqGetSearchInfo=(params)=>requests({url:'/list',method:'post',data:params})
