@@ -4,9 +4,16 @@ import App from './App.vue'
 import TypeNav from '@/components/TypeNav'; 
 // 轮播图
 import Carsousel from '@/components/Carousel'
+// 分页器
+import Pagination from '@/components/Pagination'
+import { Button, MessageBox } from 'element-ui';
+Vue.component(Button.name, Button);
 // 第一个餐护士：全局组件的名字 第二个参数：那一个组件
 Vue.component(TypeNav.name,TypeNav)
 Vue.component(Carsousel.name,Carsousel)
+Vue.component(Pagination.name,Pagination)
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
 // 引入路由
 import router from './pages/router'
 // 引入仓库
@@ -14,13 +21,15 @@ import store from '@/store';
 // 引入 MockServer.js --mock数据
 import '@/mock/mockServe'
 // 引入swipter样式 
-import  'swiper/css/swiper.css'
-import {reqGetSearchInfo} from '@/api'
-console.log(reqGetSearchInfo());
+import 'swiper/css/swiper.css'
+// 统一接口api文件夹里面全部请求函数
+import * as API from '@/api';
+
 new Vue({
   render: h => h(App),
   beforeCreate(){
-    Vue.prototype.$bus=this
+    Vue.prototype.$bus=this;
+    Vue.prototype.$API=API;
   },
   // 注册路由：底下的写法KV一致省略V【router小写的】
   router,

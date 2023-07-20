@@ -2,13 +2,12 @@
 //第一步：引入插件、安装插件
 import VueRouter from "vue-router";
 import Vue from "vue";
+import routes from "./routes";
+import store from '@/store';
 Vue.use(VueRouter);
 //引入路由相关的配置项
 //引入相应的路由组件
-import home from '@/pages/Home';
-import Search from '@/pages/Search';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
+
 let originPush=VueRouter.prototype.push;
 VueRouter.prototype.push=function(location,resolve,reject){
     if(resolve&&reject){
@@ -17,39 +16,41 @@ VueRouter.prototype.push=function(location,resolve,reject){
         originPush.call(this,location,()=>{},()=>{})
     }
 }
-export default new VueRouter({ routes:[
-    {
-        path: '/home',
-        name: 'home',
-        component:home,
-        meta: { show: true },
-    }
-    ,
-    {
-        //命名路由,给路由起一个名字
-        name: 'search',
-        //在注册路由的时候,如果这里占位，切记务必要传递params
-        path: '/search/:keyword?',
-        component: Search,
-        meta: { show: true },
-    }
-    ,
-    {
-        path: '/login',
-        component: Login,
-        meta: { show: false },
-    }
-    ,
-    {
-        path: '/register',
-        component: Register,
-        meta: { show: false },
-    }
-    ,
-    //重定向到首页
-    {
-        path: '/',
-        redirect: '/home'
-    }
+let router=new VueRouter({ 
+    routes,
+    // 滚动行为
+    scrollBehavior (to, from, savedPosition) {
+        return {  y: 0 }
+      }
+})
 
-]})
+// 全局守卫：前置守卫（在路由之间进行判断）
+router.beforeEach(async (to,from,next)=>{
+        next();
+    let token=store.state.user.token;
+    let name=store.state.user.userInfo.name;
+    if(token){
+        if(to.path=='/login'){
+            next('/home')
+        }else{
+            // 如果有用户名
+            if(name){
+                next();
+            }else{
+                try {
+                    // 没有用户名，派发action让仓库存储用户信息在跳转
+                await store.dispatch('getUserInfo');
+                next();
+                } catch (error) {
+                    // token过期
+                    // 清除token
+                    await store.dispatch('userLogout');
+                    next('/login')
+                }
+            }
+        }
+    }else{
+
+    }
+})
+export default router;
