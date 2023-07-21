@@ -7,7 +7,38 @@ import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
 import Trade from '@/pages/Trade'
 import Pay from '@/pages/Pay'
+import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
+//引入二级路由
+import MyOrder from '@/pages/Center/myOrder';
+import GroupOrder from '@/pages/Center/groupOrder';
 export default[
+    {
+        path: '/center',
+        component:Center,
+        meta: { show: true },
+        children:[
+            {
+                path:'myOrder',
+                component:MyOrder
+            },
+            {
+                path:'groupOrder',
+                component:GroupOrder
+            },
+            {
+                path:'/center',
+                redirect:'/center/myOrder'
+            }
+        ]
+    }
+    ,
+    {
+        path: '/paysuccess',
+        component:PaySuccess,
+        meta: { show: true },
+    }
+    ,
     {
         path: '/pay',
         component:Pay,

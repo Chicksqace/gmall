@@ -84,11 +84,15 @@
 </template>
 
 <script>
+import QRCode from 'qrcode'
   export default {
     name: 'Pay',
     data() {
       return {
-        payInfo:{}
+        payInfo:{},
+        timer:null,
+        // 支付的状态码
+        code:'',
       }
     },
     computed:{
@@ -108,8 +112,12 @@
         }
       },
       // 弹出框
-      open(){
-        this.$alert('<strong>这是 <i>HTML</i> 片段</strong>', 'HTML 片段', {
+      async open(){
+        // 生成二维码
+        // let url=await QRCode.toDataURL(this.payInfo.codeUrl);
+        let url=await QRCode.toDataURL('this.payInfo.codeUrl');
+        console.log(url);
+        this.$alert(`<img src=https://pica.zhimg.com/36940066ff196785773634369b4290c8_r.jpg?source=1940ef5c} style="width: 30px;height: 30px;"/>`, '请你微信支付', {
           dangerouslyUseHTMLString: true,
           // 中间布局
           center:true,
@@ -119,9 +127,48 @@
           cancelButtonText:'支付遇到问题',
           confirmButtonText:'已支付成功',
           // 右上角的x
-          showClose:false
+          showClose:false,
+           // 关闭弹出框的配置值
+           beforeClose:(type,instance,done)=>{
+            // type:区分取消|确定按钮
+            // instance：当前组件实例
+            // done:关闭弹出框的方法
+            if(type=='cancel'){
+              alert('请联系管理员豪哥');
+              clearInterval(this.time)
+              // 关闭弹出框
+              done()
+            }else{
+              // 判断是否真的支付
+              // if(this.code==200){
+                clearInterval(this.timer)
+                this.timer=null
+                done()
+                this.$router.push('/paysuccess');
+              // }
+            }
+           }
           
         });
+
+        //定时器没有，开启一个新的定时器
+        if(!this.timer){
+          this.timer=setInterval(async () => {
+            let result=await this.$API.reqPayStatus(this.orderId)
+            if(result.code==200){
+              // 第一步：清除定时器
+              clearInterval(this.timer);
+              this.timer=null;
+              // 保存支付成功回来的code
+              this.code=result.code
+              // 关闭弹出框
+              this.$msgbox.close();
+              // 跳转到支付成功路由
+              this.$router.push('/paysuccess');
+             
+            }
+          }, 1000);
+        }
       }
     }
   }

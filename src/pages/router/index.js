@@ -50,6 +50,15 @@ router.beforeEach(async (to,from,next)=>{
             }
         }
     }else{
+        // 卡登录，不能跳转交易、支付,个人中心方面的页面
+        let toPath=to.path;
+        console.log(toPath);
+        if(toPath.indexOf('/trade')!=-1||toPath.indexOf('/pay')!=-1||toPath.indexOf('/center')!=-1){
+            next('/login?redirect='+toPath);
+        }else{
+             // 去的不是这些页面，那就放行
+             next();
+        }
 
     }
 })
