@@ -13,6 +13,11 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 export default {
   name: 'App',
+  data() {
+    return {
+      msg:'abc'
+    }
+  },
   components: {
     Header,
     Footer
