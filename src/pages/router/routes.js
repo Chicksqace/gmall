@@ -1,7 +1,4 @@
-import home from '@/pages/Home';
-import Search from '@/pages/Search';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
+// import home from '@/pages/Home';
 import Detail from '@/pages/Detail'
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
@@ -12,6 +9,8 @@ import Center from '@/pages/Center'
 //引入二级路由
 import MyOrder from '@/pages/Center/myOrder';
 import GroupOrder from '@/pages/Center/groupOrder';
+
+
 export default[
     {
         path: '/center',
@@ -90,7 +89,7 @@ export default[
     {
         path: '/home',
         name: 'home',
-        component:home,
+        component:()=>import("@/view/Home"),
         meta: { show: true },
     }
     ,
@@ -99,19 +98,19 @@ export default[
         name: 'search',
         //在注册路由的时候,如果这里占位，切记务必要传递params
         path: '/search/:keyword?',
-        component: Search,
+        component: ()=>import("@/view/Search"),
         meta: { show: true },
     }
     ,
     {
         path: '/login',
-        component: Login,
+        component: ()=>import("@/view/Login"),
         meta: { show: false },
     }
     ,
     {
         path: '/register',
-        component: Register,
+        component: ()=>import("@/view/Register"),
         meta: { show: false },
     }
     ,
