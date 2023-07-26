@@ -89,7 +89,7 @@ export default[
     {
         path: '/home',
         name: 'home',
-        component:()=>import("@/view/Home"),
+        component:()=>import("@/pages/Home"),
         meta: { show: true },
     }
     ,
@@ -98,19 +98,19 @@ export default[
         name: 'search',
         //在注册路由的时候,如果这里占位，切记务必要传递params
         path: '/search/:keyword?',
-        component: ()=>import("@/view/Search"),
+        component: ()=>import("@/pages/Search"),
         meta: { show: true },
     }
     ,
     {
         path: '/login',
-        component: ()=>import("@/view/Login"),
+        component: ()=>import("@/pages/Login"),
         meta: { show: false },
     }
     ,
     {
         path: '/register',
-        component: ()=>import("@/view/Register"),
+        component: ()=>import("@/pages/Register"),
         meta: { show: false },
     }
     ,
