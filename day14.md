@@ -161,3 +161,40 @@ return value
 getMessage: field => field + '必须同意'
 })
 
+
+nginx配置：
+
+1.xshell进行根目录/etc
+
+2.进行etc目录，这个目录下有一个Nginx目录，进入到这个目录【已经安装过Nginx：如果没有安装过，四五个文件】
+
+3.如果想安装Nginx服务器以后，你会发现在Nginx目录下，多了一个Nginx.conf文件，在这个文件中进行配置
+
+4.安装完Nginx服务器以后，你会发现在Nginx目录下，多了一个Nginx.conf文件，在这个文件中进行配置
+
+5.vim Nginx.conf 进行编辑，主要添加如下俩项
+
+解决第一个问题
+
+location / {
+
+        root        /root/www/dist;  这个就是Linux中放我们网站资源的路径
+
+        index        index.html;
+
+        try_files        $url        $url/   /index.html
+
+}
+
+解决第二个问题
+
+location /api {
+
+        proxy_pass http://39.98.122.111 这个就是我们需要向服务器要资源的地址
+
+}
+
+6.Nginx服务器跑起来
+
+service nginx start
+
